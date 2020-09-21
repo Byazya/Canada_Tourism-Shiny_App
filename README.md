@@ -2,11 +2,12 @@
 
 ## Final project for "Developing Data Products" course<br>
 <br>
-Repo contains 4 files:<br>
+Repo contains 5 files:<br>
 1. README.md<br>
 2. ui.R<br>
 3. server.R<br>
-4. Presentation.Rmd<br>
+4. Tourism_Presemt.Rmd - Presentation code<br>
+5. 24100047.csv - data file <br>
 <br>
 This peer assessed assignment has two parts. First, a Shiny application. Second, a reproducible pitch presentation about my application.<br>
 <br>
