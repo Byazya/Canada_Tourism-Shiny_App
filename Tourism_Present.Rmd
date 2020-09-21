@@ -1,0 +1,129 @@
+---
+title: "Tourism in Canada"
+author: "Anna Byazina"
+date: "9/21/2020"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+```{r libraries}
+library(shiny)
+library(dplyr)
+library(tidyr)
+library(plotly)
+library(shinyWidgets)
+library(zoo)
+library(RColorBrewer)
+```
+
+## Are you...
+
+... looking for new business opportunities and considering tourism?  
+... looking for new ways to grow your existing business?  
+... trying to tailor your services to your customers needs and wondering what these needs are?  
+<br>
+<br>
+
+**Most importantly: Do you like to have your business decisions supported by data?**
+
+***
+**See the full picture** <br>
+With this application you can see the full picture of tourists spending flows in Canada.<br>
+<br>
+![](./Pres_1_1.png)
+
+***
+**See the details** <br>
+<br>
+Compare spending of residents of **USA, China, Mexico and Germany** in British Columbia in 4th quarter of 2019.<br>
+*Hover over the pie charts to see exact amounts in CAD.*
+```{r, fig.align='left'}
+
+x <- read.csv("./24100047.csv")
+names(x)[1]<-"Date"
+x$Date <- as.Date(paste0(x$Date, "-01"))
+x$Date <- as.yearqtr(x$Date, format = "%Y-%m-%d")
+
+expencesUSA <- as.data.frame(x) %>%
+    filter(GEO=="British Columbia", Date== "2019 Q4", 
+           Area.of.residence == "United States residents",Type.of.expenditures!="Total expenditures") 
+expencesMexico <- as.data.frame(x) %>%
+    filter(GEO=="British Columbia", Date== "2019 Q4", 
+           Area.of.residence == "Mexico",Type.of.expenditures!="Total expenditures")
+expencesChina <- as.data.frame(x) %>%
+    filter(GEO=="British Columbia", Date== "2019 Q4", 
+           Area.of.residence == "China",Type.of.expenditures!="Total expenditures")
+expencesGermany <- as.data.frame(x) %>%
+    filter(GEO=="British Columbia", Date== "2019 Q4", 
+           Area.of.residence == "Germany",Type.of.expenditures!="Total expenditures")
+         
+cols <- brewer.pal(length(expencesUSA$Type.of.expenditures),"Set2")
+colors <- colorRampPalette(cols)
+pies <- plot_ly()
+pies <- pies %>% add_pie(data=expencesUSA, labels = ~Type.of.expenditures, values = ~VALUE*1000, 
+                         name = "USA", 
+                         domain = list(row = 0, column = 0),
+                         marker = list(colors = colors(length(expencesUSA$Type.of.expenditures)),
+                                     line = list(color = '#FFFFFF', width = 1)),
+                         title = "USA", textinfo = "percent", insidetextfont = list(color = '#FFFFFF'),
+                         hoverinfo = "text", 
+                         text = ~paste(Type.of.expenditures, ":", 
+                                       prettyNum(VALUE*1000, big.mark = ","), "M")) %>%
+    add_pie(data = expencesChina, labels = ~Type.of.expenditures, values = ~VALUE*1000, name = "China",
+                         domain = list(row = 0, column = 1),
+                         marker = list(colors = colors(length(expencesUSA$Type.of.expenditures)),
+                                     line = list(color = '#FFFFFF', width = 1)),
+                         title = "China", textinfo = "percent", insidetextfont = list(color = '#FFFFFF'),
+                         hoverinfo = "text", 
+                         text = ~paste(Type.of.expenditures, ":", 
+                                       prettyNum(VALUE*1000, big.mark = ","), "M")) %>%
+    add_pie(data = expencesMexico, labels = ~Type.of.expenditures, values = ~VALUE*1000, name = "Mexico",
+                         domain = list(row = 1, column = 0),
+                         marker = list(colors = colors(length(expencesUSA$Type.of.expenditures)),
+                                     line = list(color = '#FFFFFF', width = 1)),
+                         title = "Mexico", textinfo = "percent", insidetextfont = list(color = '#FFFFFF'),
+                         hoverinfo = "text", 
+                         text = ~paste(Type.of.expenditures, ":", 
+                                       prettyNum(VALUE*1000, big.mark = ","), "M")) %>%
+    add_pie(data = expencesGermany, labels = ~Type.of.expenditures, values = ~VALUE*1000, 
+                         name = "Germany",
+                         domain = list(row = 1, column = 1),
+                         marker = list(colors = colors(length(expencesUSA$Type.of.expenditures)),
+                                     line = list(color = '#FFFFFF', width = 1)),
+                         title = "Germany", textinfo = "percent", 
+                         insidetextfont = list(color = '#FFFFFF'),
+                         hoverinfo = "text", 
+                         text = ~paste(Type.of.expenditures, ":", 
+                                       prettyNum(VALUE*1000, big.mark = ","), "M"))
+pies <- pies %>% layout(title = "", showlegend = T,
+                        grid=list(rows=2, columns=2),
+                        xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+                        yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+
+pies
+
+```
+
+
+## Thank you!
+
+
+Please check out this application [here](https://byazya.shinyapps.io/canada_tourism/)<br>
+<br>
+ui.R and server.R code can be found [here]()<br>
+<br>
+*Data used for this assignment was obtained from [Statistics Canada web-site](https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2410004701&pickMembers%5B0%5D=1.21&pickMembers%5B1%5D=3.6&cubeTimeFrame.startMonth=01&cubeTimeFrame.startYear=2019&cubeTimeFrame.endMonth=10&cubeTimeFrame.endYear=2019&referencePeriods=20190101%2C20191001)*<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+I hope you will find this app helpful. 
+
+
+
